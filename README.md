@@ -1,6 +1,11 @@
 # test
 Simple C++ Test Harness for Linux
 
+# Including library
+```
+#include "Test.hpp"
+```
+
 # Test Cases
 Test Cases are functions defined with the TEST_CASE macro:
 ```
