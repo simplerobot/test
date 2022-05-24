@@ -4,7 +4,7 @@ TEST_BUILD_DIR = $(BUILD_DIR)/test
 RELEASE_DIR = $(BUILD_DIR)/release
 
 CC = g++
-CFLAGS = -I$(LIBRARY_BUILD_DIR) -fsanitize=address -static-libasan -DTEST -Wall -Wno-multichar -Werror
+CFLAGS = -Wall -Werror -DTEST -I$(LIBRARY_BUILD_DIR) -fsanitize=address -static-libasan -g -Og
 
 SOURCE_DIR = source
 MAIN_SOURCE_DIR = $(SOURCE_DIR)/main
@@ -48,6 +48,6 @@ $(RELEASE_DIR) :
 	mkdir -p $@
 
 clean:
-	@ rm -rf $(BUILD_DIR)
+	rm -rf $(BUILD_DIR)
 
 -include $(wildcard $(TEST_BUILD_DIR)/*.d)

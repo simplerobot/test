@@ -171,7 +171,8 @@ OutputCapture::OutputCapture()
 		ssize_t size = ::read(m_pipe_source, buffer, sizeof(buffer));
 		while (size > 0)
 		{
-			::write(m_saved_output, buffer, size);
+			if (::write(m_saved_output, buffer, size) < 0)
+				break;
 			m_buffer.write(buffer, size);
 			size = ::read(m_pipe_source, buffer, sizeof(buffer));
 		}
