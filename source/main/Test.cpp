@@ -129,6 +129,14 @@ bool TestCaseListItem::RunAll()
 		}
 	}
 
+	if (total_test_count != passed_test_count)
+	{
+		std::printf("== Failed Tests ==\n");
+		for (char c : failed_test_output.str())
+			std::putchar(c);
+		std::printf("== End Failed Tests ==\n");
+	}
+
 	std::printf("== TEST SUMMARY ==\n");
 	std::printf("%3zd Total Tests\n", total_test_count);
 	std::printf("%3zd Tests Passed\n", passed_test_count);
@@ -140,10 +148,6 @@ bool TestCaseListItem::RunAll()
 	else
 	{
 		std::printf("%3zd Failed Tests\n", total_test_count - passed_test_count);
-		std::printf("== Failed Tests ==\n");
-		for (char c : failed_test_output.str())
-			std::putchar(c);
-		std::printf("== End Failed Tests ==\n");
 		std::printf("== TESTS FAILED ==\n");
 		return false;
 	}
