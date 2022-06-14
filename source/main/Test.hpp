@@ -9,6 +9,10 @@
 #error Tests must be compiled with the TEST macro defined.
 #endif
 
+#ifndef __EXCEPTIONS
+#error Tests must be compiled with exception support.
+#endif
+
 
 #include "Assert.h"
 
