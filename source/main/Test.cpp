@@ -1,3 +1,5 @@
+#ifdef TEST
+
 #include "Test.hpp"
 #include <cstdint>
 #include <cstdarg>
@@ -297,3 +299,4 @@ extern void NotifyAssertFailed(const char* file, long line, const char* function
 	}
 }
 
+#endif // TEST
