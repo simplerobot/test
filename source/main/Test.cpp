@@ -13,6 +13,11 @@
 
 TestCaseListItem* TestCaseListItem::g_head = nullptr;
 TestCaseListItem** TestCaseListItem::g_tail = &g_head;
+
+TestHelperListItem* TestHelperListItem::g_head = nullptr;
+TestHelperListItem** TestHelperListItem::g_tail = &g_head;
+
+
 static int g_test_depth = 0;
 static bool g_test_failure = false;
 
@@ -69,13 +74,16 @@ TestCaseListItem::~TestCaseListItem()
 
 bool TestCaseListItem::Run()
 {
+	TestHelperListItem::Run(TestHelperListItem::SETUP);
 	g_test_depth++;
 	g_thread_test_depth++;
 	g_test_failure = false;
 	bool test_passed = false;
 	try
 	{
+		TestHelperListItem::Run(TestHelperListItem::START);
 		(m_test)();
+		TestHelperListItem::Run(TestHelperListItem::FINISH);
 		test_passed = !g_test_failure;
 	}
 	catch (const AssertFailedException& e)
@@ -97,6 +105,7 @@ bool TestCaseListItem::Run()
 	g_test_depth--;
 	g_thread_test_depth--;
 	g_test_failure = false;
+	TestHelperListItem::Run(TestHelperListItem::TEARDOWN);
 
 	return test_passed;
 }
@@ -151,6 +160,29 @@ bool TestCaseListItem::RunAll()
 		std::printf("== TESTS FAILED ==\n");
 		return false;
 	}
+}
+
+
+TestHelperListItem::TestHelperListItem(HelperFn fn, Type type)
+	: m_helper_fn(fn)
+	, m_type(type)
+	, m_next(nullptr)
+	, m_prev(g_tail)
+{
+	*g_tail = this;
+	g_tail = &this->m_next;
+}
+
+TestHelperListItem::~TestHelperListItem()
+{
+	*m_prev = m_next;
+}
+
+void TestHelperListItem::Run(Type type)
+{
+	for (TestHelperListItem* cursor = g_head; cursor != nullptr; cursor = cursor->m_next)
+		if (cursor->m_type == type)
+			(*cursor->m_helper_fn)();
 }
 
 

@@ -46,5 +46,45 @@ private:
 };
 
 
+#define TEST_SETUP(X) TEST_HELPER(X, SETUP)
+#define TEST_TEARDOWN(X) TEST_HELPER(X, TEARDOWN)
+#define TEST_START(X) TEST_HELPER(X, START)
+#define TEST_FINISH(X) TEST_HELPER(X, FINISH)
+
+#define TEST_HELPER(NAME, TYPE) \
+	void TEST_ ## TYPE ## _ ## NAME(); \
+	TestHelperListItem _TEST_ ## TYPE ## _ ## NAME(TEST_ ## TYPE ## _ ## NAME, TestHelperListItem::TYPE); \
+	void TEST_ ## TYPE ## _ ## NAME()
+
+
+class TestHelperListItem
+{
+public:
+	enum Type
+	{
+		SETUP,
+		TEARDOWN,
+		START,
+		FINISH,
+	};
+
+	typedef void(*HelperFn)();
+
+	TestHelperListItem(HelperFn fn, Type type);
+	~TestHelperListItem();
+
+	static void Run(Type type);
+
+private:
+	HelperFn m_helper_fn;
+	Type m_type;
+	TestHelperListItem* m_next;
+	TestHelperListItem** m_prev;
+
+	static TestHelperListItem* g_head;
+	static TestHelperListItem** g_tail;
+};
+
+
 extern void NotifyAssertFailed(const char* file, long line, const char* function, const char* message, ...) __attribute__ ((format (printf, 4, 5)));
 
