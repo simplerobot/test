@@ -2,10 +2,11 @@
 
 
 #ifdef TEST
-	#define ASSERT(X) ((X) ? (void)0 : NotifyAssertFailed(__FILE__, __LINE__, __PRETTY_FUNCTION__, "ASSERT(%s)", #X))
-	#define ASSERT_TRUE(X) ((X) ? (void)0 : NotifyAssertFailed(__FILE__, __LINE__, __PRETTY_FUNCTION__, "ASSERT_TRUE(%s)", #X))
-	#define ASSERT_FALSE(X) ((X) ? NotifyAssertFailed(__FILE__, __LINE__, __PRETTY_FUNCTION__, "ASSERT_FALSE(%s)", #X) : (void)0)
-	#define ASSERT_THROWS(X) { bool caught_error = false; try { X; } catch (...) { caught_error = true; } if (!caught_error) NotifyAssertFailed(__FILE__, __LINE__, __PRETTY_FUNCTION__, "ASSERT_THROWS(%s)", #X); }
+	#define FAIL(...) NotifyAssertFailed(__FILE__, __LINE__, __PRETTY_FUNCTION__, __VA_ARGS__)
+	#define ASSERT(X) ((X) ? (void)0 : FAIL("ASSERT(%s)", #X))
+	#define ASSERT_TRUE(X) ((X) ? (void)0 : FAIL("ASSERT_TRUE(%s)", #X))
+	#define ASSERT_FALSE(X) ((X) ? FAIL("ASSERT_FALSE(%s)", #X) : (void)0)
+	#define ASSERT_THROWS(X) { bool caught_error = false; try { X; } catch (...) { caught_error = true; } if (!caught_error) FAIL("ASSERT_THROWS(%s)", #X); }
 
 	#ifdef __cplusplus
 	extern "C" {
@@ -15,6 +16,7 @@
 	}
 	#endif
 #else
+	#define FAIL(...)
 	#define ASSERT(X)
 	#define ASSERT_TRUE(X)
 	#define ASSERT_FALSE(X)
