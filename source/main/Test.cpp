@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <sstream>
 #include <thread>
+#include <chrono>
 
 
 TestCaseListItem* TestCaseListItem::g_head = nullptr;
@@ -120,6 +121,7 @@ bool TestCaseListItem::RunAll()
 
 	size_t total_test_count = 0;
 	size_t passed_test_count = 0;
+	auto start_time = std::chrono::steady_clock::now();
 
 	for (TestCaseListItem* current_test = g_head; current_test != nullptr; current_test = current_test->m_next)
 	{
@@ -140,6 +142,9 @@ bool TestCaseListItem::RunAll()
 		}
 	}
 
+	auto end_time = std::chrono::steady_clock::now();
+	double elapsed_time_s = std::chrono::duration<double, std::ratio<1, 1>>(end_time - start_time).count();
+
 	if (total_test_count != passed_test_count)
 	{
 		std::printf("== Failed Tests ==\n");
@@ -153,13 +158,13 @@ bool TestCaseListItem::RunAll()
 	std::printf("%3zd Tests Passed\n", passed_test_count);
 	if (total_test_count == passed_test_count)
 	{
-		std::printf("== TESTS PASSED ==\n");
+		std::printf("== TESTS PASSED in %.3fs ==\n", elapsed_time_s);
 		return true;
 	}
 	else
 	{
 		std::printf("%3zd Failed Tests\n", total_test_count - passed_test_count);
-		std::printf("== TESTS FAILED ==\n");
+		std::printf("== TESTS FAILED in %.3fs ==\n", elapsed_time_s);
 		return false;
 	}
 }

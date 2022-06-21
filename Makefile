@@ -15,9 +15,11 @@ TEST_CPP_SOURCES = $(notdir $(wildcard $(MAIN_SOURCE_DIR)/*.cpp $(TEST_SOURCE_DI
 
 VPATH = $(MAIN_SOURCE_DIR) : $(TEST_SOURCE_DIR)
 
-.PHONY: default library test release clean
+.PHONY: default all library test release clean
 
-default : release
+default : all
+
+all : release
 
 library : $(LIBRARY_FILES:%=$(LIBRARY_BUILD_DIR)/%)
 
