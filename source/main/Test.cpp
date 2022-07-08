@@ -12,6 +12,7 @@
 #include <sstream>
 #include <thread>
 #include <chrono>
+#include "logger.h"
 
 
 TestCaseListItem* TestCaseListItem::g_head = nullptr;
@@ -32,6 +33,19 @@ int main(void)
 	if (!TestCaseListItem::RunAll())
 		return 1;
 	return 0;
+}
+
+
+extern void logger_format_message(LoggerLevel level, const char* zone, const char* format, ...)
+{
+	std::printf("%s %s ", ToString(level), zone);
+
+	va_list args;
+	va_start(args, format);
+	std::vprintf(format, args);
+	va_end(args);
+
+	std::printf("\n");
 }
 
 
