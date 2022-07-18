@@ -36,7 +36,7 @@ int main(void)
 }
 
 
-extern void logger_format_message(LoggerLevel level, const char* zone, const char* format, ...)
+extern void __attribute((weak)) logger_format_message(LoggerLevel level, const char* zone, const char* format, ...)
 {
 	std::printf("%s %s ", ToString(level), zone);
 
