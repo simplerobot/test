@@ -49,13 +49,6 @@ extern void __attribute((weak)) logger_format_message(LoggerLevel level, const c
 }
 
 
-class AssertFailedException
-{
-public:
-	AssertFailedException() {}
-};
-
-
 class OutputCapture
 {
 public:
