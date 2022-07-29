@@ -247,15 +247,6 @@ std::string OutputCapture::Stop()
 	return m_buffer.str();
 }
 
-static const char* ShortFileName(const char* filename)
-{
-	const char* result = filename;
-	for (const char* cursor = filename; *cursor != 0; cursor++)
-		if (*cursor == '/' || *cursor == '\\')
-			result = cursor + 1;
-	return result;
-}
-
 static bool is_destructor(const char* function_name)
 {
 	return (std::strstr(function_name, "::~") != nullptr);
@@ -300,10 +291,15 @@ extern void NotifyAssertFailed(const char* file, long line, const char* function
 
 	va_list args;
 	va_start(args, message);
-	va_end(args);
-	std::printf("%s '", failure_type);
+	std::printf("%s:%ld:1: assert: ‘", file, line);
 	std::vprintf(message, args);
-	std::printf("' %s %s:%ld\n", function, ShortFileName(file), line);
+	std::printf("‘ %s ", failure_type);
+	if (std::strncmp(function, "TEST_CASE_", 10) == 0)
+		std::printf("in test: TEST_CASE(%s)", function + 10);
+	else
+		std::printf("in function: %s", function);
+	std::printf("\n");
+	va_end(args);
 
 	if (throw_error)
 	{
